@@ -104,7 +104,6 @@ const TripsPage = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-0.5">4.</p>
           <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100">Trip Dispatcher</h1>
         </div>
         <div className="flex items-center gap-3">
