@@ -78,6 +78,19 @@ const LoginPage = () => {
     }
   };
 
+  const quickLogin = async (user) => {
+    setLoading(true);
+    try {
+      await login({ email: user.email, password: 'password', role: user.role });
+      toast.success(`Signed in as ${user.role}`);
+      navigate(ROUTES.DASHBOARD);
+    } catch {
+      toast.error('Quick login failed.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const locked = failCount >= 5;
 
   return (
@@ -210,11 +223,21 @@ const LoginPage = () => {
           {/* Divider */}
           <div className="my-5" style={{ borderTop: '1px solid #292c30' }} />
 
-          {/* RBAC scope info */}
-          <div className="space-y-1">
-            <p className="text-xs" style={{ color: '#6e757c' }}>Access is scoped by role after login:</p>
-            {ROLE_LIST.map(({ role, access }) => (
-              <p key={role} className="text-xs" style={{ color: '#a4aab0' }}>• {role} → {access}</p>
+          {/* Quick login */}
+          <p className="text-xs font-medium mb-2" style={{ color: '#6e757c' }}>QUICK LOGIN — DEMO USERS</p>
+          <div className="space-y-1.5">
+            {ROLE_LIST.map((user) => (
+              <button
+                key={user.role}
+                type="button"
+                onClick={() => quickLogin(user)}
+                disabled={loading}
+                className="w-full flex items-center justify-between px-3 py-2 rounded text-xs"
+                style={{ background: '#1a1a1a', border: '1px solid #4c5359', color: '#a4aab0', opacity: loading ? 0.5 : 1 }}
+              >
+                <span className="font-medium" style={{ color: '#d3d3d3' }}>{user.role}</span>
+                <span style={{ color: '#6e757c' }}>{user.email}</span>
+              </button>
             ))}
           </div>
         </div>

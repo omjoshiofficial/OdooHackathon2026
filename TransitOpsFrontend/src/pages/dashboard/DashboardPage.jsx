@@ -27,18 +27,14 @@ const DashboardPage = () => {
 
   const setF = (k) => (e) => setFilters((p) => ({ ...p, [k]: e.target.value }));
 
-  const sel = (val) => (
-    <div className="relative">
-      <select
-        value={val === 'All' ? 'All' : val}
-        onChange={() => {}}
-        className="appearance-none text-xs px-3 py-1.5 rounded pr-6"
-        style={{ background: '#121212', border: '1px solid #4c5359', color: '#a4aab0', outline: 'none' }}
-      >
-        <option>All</option>
-      </select>
-      <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs pointer-events-none" style={{ color: '#6e757c' }}>▾</span>
-    </div>
+  const filteredTrips = (recent?.recentTrips ?? []).filter((t) => {
+    const statusMatch = filters.status === 'All' || t.status === filters.status;
+    const typeMatch   = filters.vehicleType === 'All' || (t.vehicleType ?? '').toLowerCase() === filters.vehicleType.toLowerCase();
+    return statusMatch && typeMatch;
+  });
+
+  const filteredFleet = (charts?.fleetUtilization ?? []).filter((f) =>
+    filters.status === 'All' || f.name === filters.status
   );
 
   return (
@@ -48,23 +44,23 @@ const DashboardPage = () => {
       <div className="flex items-center gap-3 flex-wrap">
         <span className="text-xs font-medium" style={{ color: '#6e757c' }}>FILTERS</span>
         <div className="relative">
-          <select onChange={setF('vehicleType')} className="appearance-none text-xs px-3 py-1.5 rounded pr-6"
+          <select value={filters.vehicleType} onChange={setF('vehicleType')} className="appearance-none text-xs px-3 py-1.5 rounded pr-6"
             style={{ background: '#121212', border: '1px solid #4c5359', color: '#a4aab0', outline: 'none' }}>
-            {['All','Truck','Van','Bus','Pickup','Tanker'].map((o) => <option key={o}>{o === 'All' ? 'Vehicle Type: All' : o}</option>)}
+            {['All','Truck','Van','Bus','Pickup','Tanker'].map((o) => <option key={o} value={o}>{o === 'All' ? 'Vehicle Type: All' : o}</option>)}
           </select>
           <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs pointer-events-none" style={{ color: '#6e757c' }}>▾</span>
         </div>
         <div className="relative">
-          <select onChange={setF('status')} className="appearance-none text-xs px-3 py-1.5 rounded pr-6"
+          <select value={filters.status} onChange={setF('status')} className="appearance-none text-xs px-3 py-1.5 rounded pr-6"
             style={{ background: '#121212', border: '1px solid #4c5359', color: '#a4aab0', outline: 'none' }}>
-            {['All','Available','On Trip','In Shop','Retired'].map((o) => <option key={o}>{o === 'All' ? 'Status: All' : o}</option>)}
+            {['All','Draft','Dispatched','Completed','Cancelled'].map((o) => <option key={o} value={o}>{o === 'All' ? 'Status: All' : o}</option>)}
           </select>
           <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs pointer-events-none" style={{ color: '#6e757c' }}>▾</span>
         </div>
         <div className="relative">
-          <select onChange={setF('region')} className="appearance-none text-xs px-3 py-1.5 rounded pr-6"
+          <select value={filters.region} onChange={setF('region')} className="appearance-none text-xs px-3 py-1.5 rounded pr-6"
             style={{ background: '#121212', border: '1px solid #4c5359', color: '#a4aab0', outline: 'none' }}>
-            {['All','North','South','East','West'].map((o) => <option key={o}>{o === 'All' ? 'Region: All' : o}</option>)}
+            {['All','North','South','East','West'].map((o) => <option key={o} value={o}>{o === 'All' ? 'Region: All' : o}</option>)}
           </select>
           <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs pointer-events-none" style={{ color: '#6e757c' }}>▾</span>
         </div>
@@ -107,13 +103,13 @@ const DashboardPage = () => {
           </div>
 
           {/* Rows */}
-          {recent?.recentTrips?.slice(0, 4).map((trip, i) => (
+          {filteredTrips.slice(0, 4).map((trip, i) => (
             <div
               key={trip.id}
               className="grid px-4 py-2.5"
               style={{
                 gridTemplateColumns: '1fr 1fr 1fr 1.2fr 1fr',
-                borderBottom: i < 3 ? '1px solid #1b1d1f' : 'none',
+                borderBottom: i < Math.min(filteredTrips.length, 4) - 1 ? '1px solid #1b1d1f' : 'none',
               }}
             >
               <span className="text-xs" style={{ color: '#d3d3d3' }}>{trip.id?.toUpperCase()}</span>
@@ -131,8 +127,8 @@ const DashboardPage = () => {
         <div className="rounded p-4" style={{ background: '#121212', border: '1px solid #4c5359' }}>
           <span className="text-xs font-medium block mb-4" style={{ color: '#a4aab0' }}>FLEET UTILIZATION</span>
           <div className="space-y-3">
-            {(charts?.fleetUtilization ?? []).map(({ name, value, color }) => {
-              const total = (charts?.fleetUtilization ?? []).reduce((s, i) => s + i.value, 0);
+            {filteredFleet.map(({ name, value, color }) => {
+              const total = filteredFleet.reduce((s, i) => s + i.value, 0);
               const pct = total > 0 ? Math.round((value / total) * 100) : 0;
               return (
                 <div key={name}>
