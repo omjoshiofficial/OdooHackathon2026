@@ -29,8 +29,8 @@ export const RevenueAreaChart = ({ data }) => (
       </defs>
       <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
       <XAxis dataKey="month" tick={{ fontSize: 11 }} axisLine={false} tickLine={false} />
-      <YAxis tick={{ fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`} />
-      <Tooltip {...tooltipStyle} formatter={(v) => [`$${v.toLocaleString()}`, undefined]} />
+      <YAxis tick={{ fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={(v) => `₹${(v / 1000).toFixed(0)}k`} />
+      <Tooltip {...tooltipStyle} formatter={(v) => [`₹${v.toLocaleString('en-IN')}`, undefined]} />
       <Legend iconType="circle" iconSize={8} wrapperStyle={{ fontSize: 11 }} />
       <Area type="monotone" dataKey="revenue" name="Revenue" stroke="#6366f1" strokeWidth={2} fill="url(#revGrad)" />
       <Area type="monotone" dataKey="fuelCost" name="Fuel Cost" stroke="#f59e0b" strokeWidth={2} fill="url(#fuelGrad)" />
@@ -55,8 +55,8 @@ export const CostLineChart = ({ data }) => (
     <LineChart data={data} margin={{ top: 5, right: 10, left: 0, bottom: 0 }}>
       <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
       <XAxis dataKey="month" tick={{ fontSize: 11 }} axisLine={false} tickLine={false} />
-      <YAxis tick={{ fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`} />
-      <Tooltip {...tooltipStyle} formatter={(v) => [`$${v.toLocaleString()}`, undefined]} />
+      <YAxis tick={{ fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={(v) => `₹${(v / 1000).toFixed(0)}k`} />
+      <Tooltip {...tooltipStyle} formatter={(v) => [`₹${v.toLocaleString('en-IN')}`, undefined]} />
       <Legend iconType="circle" iconSize={8} wrapperStyle={{ fontSize: 11 }} />
       <Line type="monotone" dataKey="maintenanceCost" name="Maintenance" stroke="#ef4444" strokeWidth={2} dot={false} />
       <Line type="monotone" dataKey="fuelCost" name="Fuel" stroke="#f59e0b" strokeWidth={2} dot={false} />

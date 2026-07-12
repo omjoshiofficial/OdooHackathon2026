@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Download, FileText, TrendingUp, Activity, DollarSign, Fuel } from 'lucide-react';
+import { Download, FileText, TrendingUp, Activity, IndianRupee, Fuel } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { dashboardApi } from '../../api/dashboardApi';
 import { expenseApi } from '../../api/expenseApi';
@@ -72,10 +72,10 @@ const ReportsPage = () => {
       />
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-        <StatCard title="Total Revenue" value={formatCurrency(data.kpis.totalRevenue)} icon={DollarSign} color="green" />
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+        <StatCard title="Total Revenue" value={formatCurrency(data.kpis.totalRevenue)} icon={IndianRupee} color="green" />
         <StatCard title="Fuel Cost" value={formatCurrency(data.kpis.totalFuel)} icon={Fuel} color="yellow" />
-        <StatCard title="Total Expenses" value={formatCurrency(data.kpis.totalExpenses)} icon={DollarSign} color="red" />
+        <StatCard title="Total Expenses" value={formatCurrency(data.kpis.totalExpenses)} icon={IndianRupee} color="red" />
         <StatCard title="Fuel Efficiency" value={`${data.kpis.fuelEfficiency} km/L`} icon={TrendingUp} color="blue" />
         <StatCard title="Fleet Utilization" value={`${data.stats.fleetUtilization}%`} icon={Activity} color="indigo" />
         <StatCard title="Vehicle ROI" value={`${data.kpis.roi}%`} icon={TrendingUp} color="purple" />

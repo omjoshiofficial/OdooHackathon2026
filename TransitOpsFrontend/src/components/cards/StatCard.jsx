@@ -16,7 +16,7 @@ const StatCard = ({ title, value, subtitle, icon: Icon, color = 'blue', trend, t
       <div className="flex items-start justify-between">
         <div className="flex-1 min-w-0">
           <p className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide truncate">{title}</p>
-          <p className="text-2xl font-bold text-gray-900 dark:text-gray-100 mt-1">{value}</p>
+          <p className="text-xl font-bold text-gray-900 dark:text-gray-100 mt-1 break-all leading-tight">{value}</p>
           {subtitle && <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{subtitle}</p>}
           {trend !== undefined && (
             <div className={classNames('flex items-center gap-1 mt-2 text-xs font-medium', trend >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-500 dark:text-red-400')}>

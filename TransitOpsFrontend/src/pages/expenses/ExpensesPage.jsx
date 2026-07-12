@@ -132,7 +132,7 @@ const ExpensesPage = () => {
           <Select label="Trip (Optional)" name="tripId" value={values.tripId} onChange={handleChange} options={tripOptions} />
           <div className="grid grid-cols-2 gap-4">
             <Select label="Expense Type" name="type" value={values.type} onChange={handleChange} error={errors.type} options={EXPENSE_TYPES} placeholder="Select type" />
-            <Input label="Amount ($)" name="amount" type="number" step="0.01" value={values.amount} onChange={handleChange} error={errors.amount} />
+            <Input label="Amount (₹)" name="amount" type="number" step="0.01" value={values.amount} onChange={handleChange} error={errors.amount} />
           </div>
           <Input label="Date" name="date" type="date" value={values.date} onChange={handleChange} error={errors.date} />
           <Textarea label="Description" name="description" value={values.description} onChange={handleChange} placeholder="Describe the expense..." />

@@ -4,8 +4,9 @@
     "\\TransitOpsFrontend",
     "\\TransitOpsFrontend\\src",
     "\\TransitOpsFrontend\\src\\pages",
+    "\\TransitOpsFrontend\\src\\pages\\dashboard",
     "\\TransitOpsFrontend\\src\\pages\\trips"
   ],
-  "SelectedNode": "\\TransitOpsFrontend\\src\\pages\\trips\\TripsPage.jsx",
+  "SelectedNode": "\\TransitOpsFrontend\\src\\pages\\dashboard\\DashboardPage.jsx",
   "PreviewInSolutionExplorer": false
 }

@@ -91,7 +91,7 @@ const FuelPage = () => {
     { key: 'vehicleId', label: 'Vehicle', render: (v) => getVehicleName(v) },
     { key: 'date', label: 'Date', sortable: true, render: (v) => formatDate(v) },
     { key: 'liters', label: 'Liters', sortable: true, render: (v) => `${v}L` },
-    { key: 'pricePerLiter', label: 'Price/L', render: (v) => `$${v}` },
+    { key: 'pricePerLiter', label: 'Price/L', render: (v) => `₹${v}` },
     { key: 'totalCost', label: 'Total Cost', sortable: true, render: (v) => formatCurrency(v) },
     { key: 'vendor', label: 'Vendor' },
     { key: 'odometer', label: 'Odometer', render: (v) => v ? `${formatNumber(v)} km` : '—' },
@@ -132,11 +132,11 @@ const FuelPage = () => {
           </div>
           <div className="grid grid-cols-2 gap-4">
             <Input label="Liters" name="liters" type="number" step="0.1" value={values.liters} onChange={handleChange} error={errors.liters} />
-            <Input label="Price per Liter ($)" name="pricePerLiter" type="number" step="0.01" value={values.pricePerLiter} onChange={handleChange} error={errors.pricePerLiter} />
+            <Input label="Price per Liter (₹)" name="pricePerLiter" type="number" step="0.01" value={values.pricePerLiter} onChange={handleChange} error={errors.pricePerLiter} />
           </div>
           <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
             <p className="text-xs text-gray-500 dark:text-gray-400">Calculated Total Cost</p>
-            <p className="text-lg font-bold text-gray-900 dark:text-gray-100">{computedCost !== '—' ? `$${computedCost}` : '—'}</p>
+            <p className="text-lg font-bold text-gray-900 dark:text-gray-100">{computedCost !== '—' ? `₹${computedCost}` : '—'}</p>
           </div>
           <Input label="Odometer (km)" name="odometer" type="number" value={values.odometer} onChange={handleChange} />
           <Input label="Notes" name="notes" value={values.notes} onChange={handleChange} placeholder="Optional notes..." />
