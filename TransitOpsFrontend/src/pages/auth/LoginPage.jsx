@@ -4,7 +4,6 @@ import { Eye, EyeOff, Loader2, ChevronDown } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { useAuth } from '../../context/AuthContext';
 import { ROLES, ROUTES } from '../../constants';
-import { mockUsers } from '../../mock/data';
 
 const ROLE_LIST = [
   { role: 'Super Admin',           email: 'admin@transitops.com',   access: 'All Modules' },
@@ -34,9 +33,8 @@ const LoginPage = () => {
     const { name, value, type, checked } = e.target;
     setForm((p) => ({ ...p, [name]: type === 'checkbox' ? checked : value }));
     if (errors[name]) setErrors((p) => ({ ...p, [name]: '' }));
-    // Auto-detect role from email
     if (name === 'email') {
-      const matched = mockUsers.find((u) => u.email.toLowerCase() === value.toLowerCase());
+      const matched = ROLE_LIST.find((r) => r.email.toLowerCase() === value.toLowerCase());
       if (matched) {
         setDetectedRole(matched.role);
         setForm((p) => ({ ...p, email: value, role: matched.role }));

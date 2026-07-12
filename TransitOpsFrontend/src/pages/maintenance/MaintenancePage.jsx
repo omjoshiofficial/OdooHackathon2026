@@ -170,31 +170,7 @@ const MaintenancePage = () => {
           </div>
 
           {/* Status Flow Diagram */}
-          <div className="pt-2 space-y-2">
-            <div className="flex items-center gap-3">
-              <span className="text-green-400 text-sm font-medium w-20">Available</span>
-              <div className="flex-1 border-t border-dashed border-gray-600 relative">
-                <span className="absolute left-1/2 -translate-x-1/2 -top-2.5 text-xs text-gray-500 whitespace-nowrap">
-                  log maintenance record
-                </span>
-              </div>
-              <ArrowRight size={14} className="text-gray-400" />
-              <span className="text-orange-400 text-sm font-medium w-16 text-right">In Shop</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <span className="text-orange-400 text-sm font-medium w-20">In Shop</span>
-              <div className="flex-1 border-t border-dashed border-gray-600 relative">
-                <span className="absolute left-1/2 -translate-x-1/2 -top-2.5 text-xs text-gray-500 whitespace-nowrap">
-                  close record (mark as closed)
-                </span>
-              </div>
-              <ArrowRight size={14} className="text-gray-400" />
-              <span className="text-green-400 text-sm font-medium w-16 text-right">Available</span>
-            </div>
-            <p className="text-xs text-orange-400 pt-1">
-              Note: In Shop vehicles are removed from the dispatch pool.
-            </p>
-          </div>
+          
         </div>
 
         {/* RIGHT — Service Log Table */}

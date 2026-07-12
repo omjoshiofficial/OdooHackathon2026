@@ -65,12 +65,12 @@ const DriversPage = () => {
       if (formModal.data) {
         const updated = await driverApi.updateDriver(formModal.data.id, values);
         setDrivers((prev) => prev.map((d) => d.id === formModal.data.id ? updated.data : d));
-        refreshDrivers(driverApi.getDriversSync());
+        refreshDrivers(drivers.map((d) => d.id === formModal.data.id ? updated.data : d));
         toast.success('Driver updated.');
       } else {
         const created = await driverApi.createDriver(values);
         setDrivers((prev) => [...prev, created.data]);
-        refreshDrivers(driverApi.getDriversSync());
+        refreshDrivers([...drivers, created.data]);
         toast.success('Driver added.');
       }
       formModal.close();
@@ -85,8 +85,9 @@ const DriversPage = () => {
     setDeleting(true);
     try {
       await driverApi.deleteDriver(deleteModal.data.id);
-      setDrivers((prev) => prev.filter((d) => d.id !== deleteModal.data.id));
-      refreshDrivers(driverApi.getDriversSync());
+      const updated = drivers.filter((d) => d.id !== deleteModal.data.id);
+      setDrivers(updated);
+      refreshDrivers(updated);
       toast.success('Driver deleted.');
       deleteModal.close();
     } catch {

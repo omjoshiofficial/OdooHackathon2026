@@ -1,19 +1,23 @@
 import { createContext, useContext, useState, useCallback, useEffect } from 'react';
-import { mockTrips } from '../mock/data';
 import { vehicleApi } from '../api/vehicleApi';
 import { driverApi } from '../api/driverApi';
+import { tripApi } from '../api/tripApi';
+import { useAuth } from './AuthContext';
 
 const AppDataContext = createContext(null);
 
 export const AppDataProvider = ({ children }) => {
-  const [trips, setTrips] = useState(mockTrips);
+  const { isAuthenticated, loading } = useAuth();
+  const [trips, setTrips] = useState([]);
   const [vehicles, setVehicles] = useState([]);
   const [drivers, setDrivers] = useState([]);
 
   useEffect(() => {
-    vehicleApi.getVehicles().then((r) => setVehicles(r.data));
-    driverApi.getDrivers().then((r) => setDrivers(r.data));
-  }, []);
+    if (!isAuthenticated || loading) return;
+    vehicleApi.getVehicles().then((r) => setVehicles(r.data)).catch(() => {});
+    driverApi.getDrivers().then((r) => setDrivers(r.data)).catch(() => {});
+    tripApi.getTrips().then((r) => setTrips(r.data)).catch(() => {});
+  }, [isAuthenticated, loading]);
 
   const addTrip = useCallback((trip) => setTrips((prev) => [...prev, trip]), []);
   const updateTrip = useCallback((updated) =>

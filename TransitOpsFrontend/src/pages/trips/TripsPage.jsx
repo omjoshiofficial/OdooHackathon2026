@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { tripApi } from '../../api/tripApi';
@@ -36,19 +36,24 @@ const validate = (v, selectedVehicle) => {
 const TripsPage = () => {
   const ctx = useOutletContext();
   const canWrite = !ctx || ctx.permission === 'full';
-  const { trips, vehicles, drivers, addTrip, updateTrip, refreshVehicles, refreshDrivers } = useAppData();
+  const { vehicles, drivers, refreshVehicles, refreshDrivers } = useAppData();
 
+  const [trips, setTrips] = useState([]);
   const [saving, setSaving] = useState(false);
   const [actionLoading, setActionLoading] = useState(null);
   const [boardPage, setBoardPage] = useState(1);
   const BOARD_PAGE_SIZE = 5;
 
-  const { values, errors, handleChange, runValidation, reset, setErrors } = useForm(INITIAL, (v) => {
+  const { values, errors, handleChange, runValidation, reset } = useForm(INITIAL, (v) => {
     const sv = vehicles.find((x) => x.id === v.vehicleId);
     return validate(v, sv);
   });
 
-  // No useEffect needed — data comes from AppDataContext
+  const loadTrips = useCallback(() => {
+    tripApi.getTrips().then((r) => setTrips(r.data)).catch(() => {});
+  }, []);
+
+  useEffect(() => { loadTrips(); }, [loadTrips]);
 
   const availableVehicles = vehicles.filter((v) => v.status === VEHICLE_STATUS.AVAILABLE);
   const availableDrivers = drivers.filter((d) => d.status === 'Available');
@@ -61,12 +66,13 @@ const TripsPage = () => {
     setSaving(true);
     try {
       const created = await tripApi.createTrip({ ...values, status: 'Draft' });
-      const dispatched = await tripApi.dispatchTrip(created.data.id);
-      addTrip(dispatched.data);
+      await tripApi.dispatchTrip(created.data.id);
       reset(INITIAL);
       toast.success('Trip dispatched.');
       const [v, d] = await Promise.all([vehicleApi.getVehicles(), driverApi.getDrivers()]);
-      refreshVehicles(v.data); refreshDrivers(d.data);
+      refreshVehicles(v.data);
+      refreshDrivers(d.data);
+      loadTrips();
     } catch (err) {
       toast.error(err?.response?.data?.message || 'Dispatch failed.');
     } finally {
@@ -77,13 +83,13 @@ const TripsPage = () => {
   const handleAction = async (action, trip) => {
     setActionLoading(trip.id + action);
     try {
-      let updated;
-      if (action === 'complete') updated = await tripApi.completeTrip(trip.id);
-      else if (action === 'cancel') updated = await tripApi.cancelTrip(trip.id);
-      updateTrip(updated.data);
+      if (action === 'complete') await tripApi.completeTrip(trip.id);
+      else if (action === 'cancel') await tripApi.cancelTrip(trip.id);
       toast.success(action === 'complete' ? 'Trip completed.' : 'Trip cancelled.');
       const [v, d] = await Promise.all([vehicleApi.getVehicles(), driverApi.getDrivers()]);
-      refreshVehicles(v.data); refreshDrivers(d.data);
+      refreshVehicles(v.data);
+      refreshDrivers(d.data);
+      loadTrips();
     } catch (err) {
       toast.error(err?.response?.data?.message || 'Action failed.');
     } finally {
@@ -96,8 +102,6 @@ const TripsPage = () => {
     return v ? `${v.registrationNumber} / ${v.name}` : id;
   };
   const getDriverLabel = (id) => drivers.find((d) => d.id === id)?.name || id;
-
-  const activeLifecycleStep = (status) => LIFECYCLE.indexOf(status);
 
   return (
     <div className="p-4 md:p-6 space-y-4 animate-slide-up">

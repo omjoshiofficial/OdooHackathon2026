@@ -60,12 +60,12 @@ const VehiclesPage = () => {
       if (formModal.data) {
         const updated = await vehicleApi.updateVehicle(formModal.data.id, values);
         setVehicles((prev) => prev.map((v) => v.id === formModal.data.id ? updated.data : v));
-        refreshVehicles(vehicleApi.getVehiclesSync());
+        refreshVehicles(vehicles.map((v) => v.id === formModal.data.id ? updated.data : v));
         toast.success('Vehicle updated.');
       } else {
         const created = await vehicleApi.createVehicle(values);
         setVehicles((prev) => [...prev, created.data]);
-        refreshVehicles(vehicleApi.getVehiclesSync());
+        refreshVehicles([...vehicles, created.data]);
         toast.success('Vehicle added.');
       }
       formModal.close();
@@ -80,8 +80,9 @@ const VehiclesPage = () => {
     setDeleting(true);
     try {
       await vehicleApi.deleteVehicle(deleteModal.data.id);
-      setVehicles((prev) => prev.filter((v) => v.id !== deleteModal.data.id));
-      refreshVehicles(vehicleApi.getVehiclesSync());
+      const updated = vehicles.filter((v) => v.id !== deleteModal.data.id);
+      setVehicles(updated);
+      refreshVehicles(updated);
       toast.success('Vehicle deleted.');
       deleteModal.close();
     } catch {

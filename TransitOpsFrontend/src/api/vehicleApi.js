@@ -1,53 +1,33 @@
-import { mockVehicles } from '../mock/data';
-import { generateId } from '../utils';
-
-const delay = (ms = 400) => new Promise((res) => setTimeout(res, ms));
-let vehicles = [...mockVehicles];
+import api from './axios';
 
 export const vehicleApi = {
-  async getVehicles(params = {}) {
-    await delay();
-    return { data: vehicles };
+  async getVehicles() {
+    const { data } = await api.get('/vehicles');
+    return { data };
   },
 
   async getVehicle(id) {
-    await delay();
-    const vehicle = vehicles.find((v) => v.id === id);
-    if (!vehicle) throw { response: { data: { message: 'Vehicle not found' } } };
-    return { data: vehicle };
+    const { data } = await api.get(`/vehicles/${id}`);
+    return { data };
   },
 
   async createVehicle(payload) {
-    await delay();
-    const exists = vehicles.find((v) => v.registrationNumber === payload.registrationNumber);
-    if (exists) throw { response: { data: { message: 'Registration number already exists.' } } };
-    const newVehicle = { ...payload, id: generateId(), createdAt: new Date().toISOString() };
-    vehicles = [...vehicles, newVehicle];
-    return { data: newVehicle };
+    const { data } = await api.post('/vehicles', payload);
+    return { data };
   },
 
   async updateVehicle(id, payload) {
-    await delay();
-    const idx = vehicles.findIndex((v) => v.id === id);
-    if (idx === -1) throw { response: { data: { message: 'Vehicle not found' } } };
-    const duplicate = vehicles.find((v) => v.registrationNumber === payload.registrationNumber && v.id !== id);
-    if (duplicate) throw { response: { data: { message: 'Registration number already exists.' } } };
-    vehicles[idx] = { ...vehicles[idx], ...payload };
-    return { data: vehicles[idx] };
+    const { data } = await api.put(`/vehicles/${id}`, payload);
+    return { data };
   },
 
   async deleteVehicle(id) {
-    await delay();
-    vehicles = vehicles.filter((v) => v.id !== id);
-    return { data: { success: true } };
+    const { data } = await api.delete(`/vehicles/${id}`);
+    return { data };
   },
 
   async updateVehicleStatus(id, status) {
-    await delay();
-    const idx = vehicles.findIndex((v) => v.id === id);
-    if (idx !== -1) vehicles[idx] = { ...vehicles[idx], status };
-    return { data: vehicles[idx] };
+    const { data } = await api.patch(`/vehicles/${id}/status`, { status });
+    return { data };
   },
-
-  getVehiclesSync: () => vehicles,
 };

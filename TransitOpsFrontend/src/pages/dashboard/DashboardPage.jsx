@@ -13,21 +13,15 @@ const S = ({ label, value, accent }) => (
 
 const ACCENT = { blue: '#5a89bc', green: '#39994b', orange: '#b86200', red: '#ff8383' };
 
-const BAR_DATA = [
-  { label: 'Available', value: 42, color: '#39994b' },
-  { label: 'On Trip',   value: 18, color: '#5a89bc' },
-  { label: 'In Shop',   value: 5,  color: '#b86200' },
-  { label: 'Retired',   value: 2,  color: '#ff8383' },
-];
-
 const DashboardPage = () => {
   const [stats, setStats]   = useState(null);
+  const [charts, setCharts] = useState(null);
   const [recent, setRecent] = useState(null);
   const [filters, setFilters] = useState({ vehicleType: 'All', status: 'All', region: 'All' });
 
   useEffect(() => {
-    Promise.all([dashboardApi.getStats(), dashboardApi.getRecentActivity()])
-      .then(([s, r]) => { setStats(s.data); setRecent(r.data); })
+    Promise.all([dashboardApi.getStats(), dashboardApi.getChartData(), dashboardApi.getRecentActivity()])
+      .then(([s, c, r]) => { setStats(s.data); setCharts(c.data); setRecent(r.data); })
       .catch(() => {});
   }, []);
 
@@ -135,14 +129,16 @@ const DashboardPage = () => {
 
         {/* Vehicle Status bar chart */}
         <div className="rounded p-4" style={{ background: '#121212', border: '1px solid #4c5359' }}>
-          <span className="text-xs font-medium block mb-4" style={{ color: '#a4aab0' }}>VEHICLE STATUS</span>
+          <span className="text-xs font-medium block mb-4" style={{ color: '#a4aab0' }}>FLEET UTILIZATION</span>
           <div className="space-y-3">
-            {BAR_DATA.map(({ label, value, color }) => {
-              const pct = Math.round((value / 67) * 100);
+            {(charts?.fleetUtilization ?? []).map(({ name, value, color }) => {
+              const total = (charts?.fleetUtilization ?? []).reduce((s, i) => s + i.value, 0);
+              const pct = total > 0 ? Math.round((value / total) * 100) : 0;
               return (
-                <div key={label}>
+                <div key={name}>
                   <div className="flex justify-between mb-1">
-                    <span className="text-xs" style={{ color: '#a4aab0' }}>{label}</span>
+                    <span className="text-xs" style={{ color: '#a4aab0' }}>{name}</span>
+                    <span className="text-xs" style={{ color: '#6e757c' }}>{value} ({pct}%)</span>
                   </div>
                   <div className="h-3 rounded" style={{ background: '#202325' }}>
                     <div className="h-3 rounded" style={{ width: `${pct}%`, background: color }} />

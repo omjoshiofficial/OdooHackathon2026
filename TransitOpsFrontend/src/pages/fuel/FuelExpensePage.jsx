@@ -417,7 +417,9 @@ const FuelExpensePage = () => {
       <Modal open={expModal} title="Add Expense" onClose={() => setExpModal(false)}>
         <div className="space-y-3">
           <Field label="Vehicle" error={exp.errors.vehicleId}>
-            <select name="vehicleId" value={exp.values.vehicleId} onChange={exp.handleChange} className={`input ${exp.errors.vehicleId ? 'input-error' : ''}`}>
+            <select name="vehicleId" value={exp.values.vehicleId}
+              onChange={(e) => { exp.handleChange(e); exp.setValue('tripId', ''); }}
+              className={`input ${exp.errors.vehicleId ? 'input-error' : ''}`}>
               <option value="">Select vehicle...</option>
               {vehicles.map((v) => <option key={v.id} value={v.id}>{v.registrationNumber}</option>)}
             </select>
@@ -425,7 +427,9 @@ const FuelExpensePage = () => {
           <Field label="Trip (Optional)">
             <select name="tripId" value={exp.values.tripId} onChange={exp.handleChange} className="input">
               <option value="">None</option>
-              {trips.map((t) => <option key={t.id} value={t.id}>{t.id?.toUpperCase()} — {t.source} → {t.destination}</option>)}
+              {trips
+                .filter((t) => !exp.values.vehicleId || t.vehicleId === exp.values.vehicleId)
+                .map((t) => <option key={t.id} value={t.id}>{t.id?.toUpperCase()} — {t.source} → {t.destination} ({t.status})</option>)}
             </select>
           </Field>
           <div className="grid grid-cols-2 gap-3">
