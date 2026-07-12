@@ -1,8 +1,11 @@
 {
   "ExpandedNodes": [
     "",
-    "\\TransitOpsFrontend"
+    "\\TransitOpsFrontend",
+    "\\TransitOpsFrontend\\src",
+    "\\TransitOpsFrontend\\src\\pages",
+    "\\TransitOpsFrontend\\src\\pages\\trips"
   ],
-  "SelectedNode": "\\TransitOpsFrontend",
+  "SelectedNode": "\\TransitOpsFrontend\\src\\pages\\trips\\TripsPage.jsx",
   "PreviewInSolutionExplorer": false
 }

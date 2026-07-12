@@ -18,6 +18,7 @@ import { EmptyState } from '../../components/common/EmptyState';
 import { SkeletonTable } from '../../components/common/Loader';
 import { formatDate, isLicenseExpired, isLicenseExpiringSoon } from '../../utils';
 import { DRIVER_STATUS, LICENSE_CATEGORIES } from '../../constants';
+import { useAppData } from '../../context/AppDataContext';
 
 const INITIAL = { name: '', licenseNumber: '', licenseCategory: '', licenseExpiry: '', phone: '', safetyScore: '', status: 'Available' };
 
@@ -43,6 +44,7 @@ const DriversPage = () => {
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
+  const { refreshDrivers } = useAppData();
   const formModal = useModal();
   const deleteModal = useModal();
   const { values, errors, handleChange, runValidation, reset } = useForm(INITIAL, validate);
@@ -63,10 +65,12 @@ const DriversPage = () => {
       if (formModal.data) {
         const updated = await driverApi.updateDriver(formModal.data.id, values);
         setDrivers((prev) => prev.map((d) => d.id === formModal.data.id ? updated.data : d));
+        refreshDrivers(driverApi.getDriversSync());
         toast.success('Driver updated.');
       } else {
         const created = await driverApi.createDriver(values);
         setDrivers((prev) => [...prev, created.data]);
+        refreshDrivers(driverApi.getDriversSync());
         toast.success('Driver added.');
       }
       formModal.close();
@@ -82,6 +86,7 @@ const DriversPage = () => {
     try {
       await driverApi.deleteDriver(deleteModal.data.id);
       setDrivers((prev) => prev.filter((d) => d.id !== deleteModal.data.id));
+      refreshDrivers(driverApi.getDriversSync());
       toast.success('Driver deleted.');
       deleteModal.close();
     } catch {

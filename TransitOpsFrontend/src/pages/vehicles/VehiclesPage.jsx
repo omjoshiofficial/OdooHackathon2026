@@ -18,6 +18,7 @@ import { SkeletonTable } from '../../components/common/Loader';
 import VehicleForm from './VehicleForm';
 import { formatCurrency, formatNumber } from '../../utils';
 import { VEHICLE_TYPES, VEHICLE_STATUS } from '../../constants';
+import { useAppData } from '../../context/AppDataContext';
 
 const INITIAL = { registrationNumber: '', name: '', model: '', type: '', maxLoadCapacity: '', currentOdometer: '', acquisitionCost: '', status: 'Available' };
 
@@ -38,6 +39,7 @@ const VehiclesPage = () => {
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
+  const { refreshVehicles } = useAppData();
   const formModal = useModal();
   const deleteModal = useModal();
   const { values, errors, handleChange, runValidation, reset, setValues } = useForm(INITIAL, validate);
@@ -58,10 +60,12 @@ const VehiclesPage = () => {
       if (formModal.data) {
         const updated = await vehicleApi.updateVehicle(formModal.data.id, values);
         setVehicles((prev) => prev.map((v) => v.id === formModal.data.id ? updated.data : v));
+        refreshVehicles(vehicleApi.getVehiclesSync());
         toast.success('Vehicle updated.');
       } else {
         const created = await vehicleApi.createVehicle(values);
         setVehicles((prev) => [...prev, created.data]);
+        refreshVehicles(vehicleApi.getVehiclesSync());
         toast.success('Vehicle added.');
       }
       formModal.close();
@@ -77,6 +81,7 @@ const VehiclesPage = () => {
     try {
       await vehicleApi.deleteVehicle(deleteModal.data.id);
       setVehicles((prev) => prev.filter((v) => v.id !== deleteModal.data.id));
+      refreshVehicles(vehicleApi.getVehiclesSync());
       toast.success('Vehicle deleted.');
       deleteModal.close();
     } catch {

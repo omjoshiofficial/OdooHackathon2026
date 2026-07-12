@@ -1,12 +1,19 @@
-import { createContext, useContext, useState, useCallback } from 'react';
-import { mockTrips, mockVehicles, mockDrivers } from '../mock/data';
+import { createContext, useContext, useState, useCallback, useEffect } from 'react';
+import { mockTrips } from '../mock/data';
+import { vehicleApi } from '../api/vehicleApi';
+import { driverApi } from '../api/driverApi';
 
 const AppDataContext = createContext(null);
 
 export const AppDataProvider = ({ children }) => {
   const [trips, setTrips] = useState(mockTrips);
-  const [vehicles, setVehicles] = useState(mockVehicles);
-  const [drivers, setDrivers] = useState(mockDrivers);
+  const [vehicles, setVehicles] = useState([]);
+  const [drivers, setDrivers] = useState([]);
+
+  useEffect(() => {
+    vehicleApi.getVehicles().then((r) => setVehicles(r.data));
+    driverApi.getDrivers().then((r) => setDrivers(r.data));
+  }, []);
 
   const addTrip = useCallback((trip) => setTrips((prev) => [...prev, trip]), []);
   const updateTrip = useCallback((updated) =>
